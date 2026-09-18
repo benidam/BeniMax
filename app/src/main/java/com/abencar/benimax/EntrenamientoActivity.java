@@ -17,7 +17,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
     private int numeroSerie = 1;
     private CountDownTimer temporizadorDescanso;
 
-    private long tiempoRestanteMilisegundos =0;
+    private long tiempoRestanteMilisegundos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
         etReps = findViewById(R.id.etReps);
         etRir = findViewById(R.id.etRir);
         Button btnGuardarSerie = findViewById(R.id.btnGuardarSerie);
+        Button btnMasTiempo = findViewById(R.id.btnMasTiempo);
 
         btnGuardarSerie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,63 +38,81 @@ public class EntrenamientoActivity extends AppCompatActivity {
                 guardarSerie();
             }
         });
+
+        btnMasTiempo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                masTiempo();
+            }
+        });
     }
 
-    private void guardarSerie() {
-        String pesoStr = etPeso.getText().toString();
-        String repsStr = etReps.getText().toString();
-        String rirStr = etRir.getText().toString();
-
-        if (pesoStr.isEmpty() || repsStr.isEmpty() || rirStr.isEmpty()) {
-            Toast.makeText(this, "Rellena todos los datos para guardar la serie", Toast.LENGTH_SHORT).show();
-            return;
+    private void masTiempo() {
+        if (temporizadorDescanso != null) {
+            temporizadorDescanso.cancel();
         }
 
-        String mensaje = "Serie " + numeroSerie + " guardada: " + pesoStr + "kg x " + repsStr + " (RIR " + rirStr + ")";
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
-
-        numeroSerie++;
-        etReps.setText("");
-        etRir.setText("");
-        etReps.requestFocus();
-
-        // Iniciamos el descanso justo después de guardar la serie
+        tiempoRestanteMilisegundos = tiempoRestanteMilisegundos + 30000;
         iniciarDescanso();
     }
 
-    private void iniciarDescanso() {
-        if (temporizadorDescanso != null) {
-            temporizadorDescanso.cancel();
-        }
 
-        tvTemporizador.setVisibility(View.VISIBLE);
+    private void guardarSerie () {
+            String pesoStr = etPeso.getText().toString();
+            String repsStr = etReps.getText().toString();
+            String rirStr = etRir.getText().toString();
 
-        temporizadorDescanso = new CountDownTimer(120000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-                tiempoRestanteMilisegundos=millisUntilFinished;
-
-                int minutos = (int) (millisUntilFinished / 1000) / 60;
-                int segundos = (int) (millisUntilFinished / 1000) % 60;
-
-                String tiempoFormateado = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
-                tvTemporizador.setText(tiempoFormateado);
+            if (pesoStr.isEmpty() || repsStr.isEmpty() || rirStr.isEmpty()) {
+                Toast.makeText(this, "Rellena todos los datos para guardar la serie", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            @Override
-            public void onFinish() {
-                tvTemporizador.setText("¡A DALE CAÑA!");
-                Toast.makeText(EntrenamientoActivity.this, "¡Fin del descanso! Toca faenar.", Toast.LENGTH_LONG).show();
-            }
-        }.start();
-    }
+            String mensaje = "Serie " + numeroSerie + " guardada: " + pesoStr + "kg x " + repsStr + " (RIR " + rirStr + ")";
+            Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (temporizadorDescanso != null) {
-            temporizadorDescanso.cancel();
+            numeroSerie++;
+            etReps.setText("");
+            etRir.setText("");
+            etReps.requestFocus();
+
+            // Iniciamos el descanso justo después de guardar la serie
+            tiempoRestanteMilisegundos=120000; // VOLVEMOS A RESTABLECER EL CONTADOR A 2 MINS , ANTES DE EMPEZAR UNA SERIE NUEVA
+            iniciarDescanso();
+        }
+
+        private void iniciarDescanso () {
+            if (temporizadorDescanso != null) {
+                temporizadorDescanso.cancel();
+            }
+
+            tvTemporizador.setVisibility(View.VISIBLE);
+
+            temporizadorDescanso = new CountDownTimer(tiempoRestanteMilisegundos, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                    tiempoRestanteMilisegundos = millisUntilFinished;
+
+                    int minutos = (int) (millisUntilFinished / 1000) / 60;
+                    int segundos = (int) (millisUntilFinished / 1000) % 60;
+
+                    String tiempoFormateado = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
+                    tvTemporizador.setText(tiempoFormateado);
+                }
+
+                @Override
+                public void onFinish() {
+                    tvTemporizador.setText("¡A DALE CAÑA!");
+                    Toast.makeText(EntrenamientoActivity.this, "¡Fin del descanso! Toca faenar.", Toast.LENGTH_LONG).show();
+                }
+            }.start();
+        }
+
+        @Override
+        protected void onDestroy () {
+            super.onDestroy();
+            if (temporizadorDescanso != null) {
+                temporizadorDescanso.cancel();
+            }
         }
     }
-}
