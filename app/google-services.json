@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "23665629632",
+    "project_id": "benimax",
+    "storage_bucket": "benimax.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23665629632:android:56bcd29d2b26f123e29025",
+        "android_client_info": {
+          "package_name": "com.abencar.benimax"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5MdqcRhgZzxgNvf-uCWlTinG_pONP3tQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

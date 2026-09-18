@@ -9,6 +9,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntrenamientoActivity extends AppCompatActivity {
 
@@ -17,6 +20,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
     private int numeroSerie = 1;
     private CountDownTimer temporizadorDescanso;
 
+    private FirebaseFirestore db;
     private long tiempoRestanteMilisegundos = 0;
 
     @Override
@@ -31,7 +35,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
         etRir = findViewById(R.id.etRir);
         Button btnGuardarSerie = findViewById(R.id.btnGuardarSerie);
         Button btnMasTiempo = findViewById(R.id.btnMasTiempo);
-
+        db = FirebaseFirestore.getInstance();
         btnGuardarSerie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +62,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
 
 
     private void guardarSerie () {
+            Map<String,Object> serie = new HashMap<>();
             String pesoStr = etPeso.getText().toString();
             String repsStr = etReps.getText().toString();
             String rirStr = etRir.getText().toString();
@@ -70,14 +75,27 @@ public class EntrenamientoActivity extends AppCompatActivity {
             String mensaje = "Serie " + numeroSerie + " guardada: " + pesoStr + "kg x " + repsStr + " (RIR " + rirStr + ")";
             Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
 
-            numeroSerie++;
-            etReps.setText("");
-            etRir.setText("");
-            etReps.requestFocus();
+            serie.put("ejercicio", "Press Banca Inclinado");
+            serie.put("Serie", numeroSerie);
+            serie.put("peso", Double.parseDouble(pesoStr));
+            serie.put("reps", Integer.parseInt(repsStr));
+            serie.put("rir", Integer.parseInt(rirStr));
 
-            // Iniciamos el descanso justo después de guardar la serie
-            tiempoRestanteMilisegundos=120000; // VOLVEMOS A RESTABLECER EL CONTADOR A 2 MINS , ANTES DE EMPEZAR UNA SERIE NUEVA
-            iniciarDescanso();
+            db.collection("series").add(serie).addOnSuccessListener(documentReference -> {
+
+                numeroSerie++;
+                etReps.setText("");
+                etRir.setText("");
+                etReps.requestFocus();
+
+                // Iniciamos el descanso justo después de guardar la serie
+                tiempoRestanteMilisegundos=120000; // VOLVEMOS A RESTABLECER EL CONTADOR A 2 MINS , ANTES DE EMPEZAR UNA SERIE NUEVA
+                iniciarDescanso();
+
+            }).addOnFailureListener(e -> {
+                Toast.makeText(EntrenamientoActivity.this,"Error de conexión: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+
         }
 
         private void iniciarDescanso () {
