@@ -11,31 +11,48 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+
 public class CrearRutinaActivity extends AppCompatActivity {
 
-    String[] listaEjercicios = {
-            "Press Banca",
-            "Sentadilla",
-            "Dominadas",
-            "Desafiar a la ratona",
-            "Curl de Bíceps",
-            "Press Militar"
-    };
+    ArrayList<String> listaEjercicios = new ArrayList<>();
+
+    ArrayList<String> listaEjSeleccionados = new ArrayList<>();
 
     // Declaramos el cajón vacío a nivel de clase para poder usarlo en cualquier parte
     LinearLayout contenedorEjercicios;
+
+    private FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_rutina);
-
-        // 1. Encontramos nuestro cajón vacío en el XML
         contenedorEjercicios = findViewById(R.id.contenedorEjercicios);
 
         configurarBotonAnadir();
         configurarBotonGuardar();
 
+        db =  FirebaseFirestore.getInstance();
+
+        db.collection("catalogo_ejercicios")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+
+                        for(QueryDocumentSnapshot documentos : task.getResult()){
+                            String nombreEjercicio = documentos.getString("nombre");
+                            listaEjercicios.add(nombreEjercicio);
+                        }
+
+                    }else {
+                        Toast.makeText(CrearRutinaActivity.this,"Error al cargar el catálogo", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -44,7 +61,7 @@ public class CrearRutinaActivity extends AppCompatActivity {
         btnGuardarEjercicio.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(CrearRutinaActivity.this, "RUTINA GUARDADA CON ÉXITO, A REVENTAR TODAS LAS PERRAS", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CrearRutinaActivity.this, "RUTINA GUARDADA CON ÉXITO, A DARLE DURO", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -64,18 +81,20 @@ public class CrearRutinaActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Selecciona un ejercicio");
 
-        builder.setItems(listaEjercicios, new DialogInterface.OnClickListener() {
+        //converti el arrayl a array normal para sacarlo por pantalla
+
+        String[] arrayDialogo = listaEjercicios.toArray(new String[0]);
+
+        builder.setItems(arrayDialogo, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String ejercicioSeleccionado = listaEjercicios[which];
+                String ejercicioSeleccionado = listaEjercicios.get(which);
+                listaEjSeleccionados.add(ejercicioSeleccionado);
 
-                // 2. LA MAGIA: Creamos un texto nuevo desde cero en Java
                 TextView nuevoTextoEjercicio = new TextView(CrearRutinaActivity.this);
                 nuevoTextoEjercicio.setText("• " + ejercicioSeleccionado);
                 nuevoTextoEjercicio.setTextSize(18);
-                nuevoTextoEjercicio.setPadding(0, 16, 0, 16); // Le damos un poco de aire
-
-                // Lo metemos dentro del cajón
+                nuevoTextoEjercicio.setPadding(0, 16, 0, 16);
                 contenedorEjercicios.addView(nuevoTextoEjercicio);
             }
         });

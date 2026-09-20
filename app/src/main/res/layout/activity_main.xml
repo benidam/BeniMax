@@ -18,7 +18,7 @@
         android:textColor="#2196F3"
         android:layout_marginBottom="64dp" />
 
-    <!-- Botón para Crear Rutina -->
+
     <Button
         android:id="@+id/btnCrearRutina"
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         android:padding="16dp"
         android:layout_marginBottom="24dp" />
 
-    <!-- Botón para Comenzar Entreno -->
+
     <Button
         android:id="@+id/btnComenzarEntreno"
         android:layout_width="match_parent"

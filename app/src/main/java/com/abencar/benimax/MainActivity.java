@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "¡A reventar esos hierros!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, EntrenamientoActivity.class);
+                intent.putExtra("CLAVE_EJ","Sentadilla Búlgara");
                 startActivity(intent);
             }
         });

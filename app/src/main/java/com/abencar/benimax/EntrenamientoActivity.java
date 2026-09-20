@@ -1,5 +1,6 @@
 package com.abencar.benimax;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -23,6 +24,8 @@ public class EntrenamientoActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private long tiempoRestanteMilisegundos = 0;
 
+    protected String nombreEjercicioActual;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,12 @@ public class EntrenamientoActivity extends AppCompatActivity {
         Button btnGuardarSerie = findViewById(R.id.btnGuardarSerie);
         Button btnMasTiempo = findViewById(R.id.btnMasTiempo);
         db = FirebaseFirestore.getInstance();
+
+        Intent intenRecibido = this.getIntent();
+        nombreEjercicioActual = intenRecibido.getStringExtra("CLAVE_EJ");
+
+        tvEjercicioActual.setText(nombreEjercicioActual);
+
         btnGuardarSerie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +84,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
             String mensaje = "Serie " + numeroSerie + " guardada: " + pesoStr + "kg x " + repsStr + " (RIR " + rirStr + ")";
             Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
 
-            serie.put("ejercicio", "Press Banca Inclinado");
+            serie.put("ejercicio", nombreEjercicioActual);
             serie.put("Serie", numeroSerie);
             serie.put("peso", Double.parseDouble(pesoStr));
             serie.put("reps", Integer.parseInt(repsStr));
@@ -120,7 +129,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
 
                 @Override
                 public void onFinish() {
-                    tvTemporizador.setText("¡A DALE CAÑA!");
+                    tvTemporizador.setText("¡A DARLE CAÑA!");
                     Toast.makeText(EntrenamientoActivity.this, "¡Fin del descanso! Toca faenar.", Toast.LENGTH_LONG).show();
                 }
             }.start();
