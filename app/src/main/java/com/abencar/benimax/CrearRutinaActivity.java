@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -27,12 +28,17 @@ public class CrearRutinaActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
+    private FirebaseAuth mAuth;
+    private String userID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_rutina);
         contenedorEjercicios = findViewById(R.id.contenedorEjercicios);
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
 
         configurarBotonAnadir();
         configurarBotonGuardar();
@@ -61,6 +67,12 @@ public class CrearRutinaActivity extends AppCompatActivity {
         btnGuardarEjercicio.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+
+
+
+
+
+
                 Toast.makeText(CrearRutinaActivity.this, "RUTINA GUARDADA CON ÉXITO, A DARLE DURO", Toast.LENGTH_SHORT).show();
                 finish();
             }

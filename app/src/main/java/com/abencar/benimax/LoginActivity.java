@@ -2,6 +2,7 @@ package com.abencar.benimax;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }else{
-                        Toast.makeText(LoginActivity.this,"Prueba a registrarte primeto!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this,"¡No hay ninguna cuenta con esas crendciales, revisa la contraseña o registrate primero!!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
