@@ -24,7 +24,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private long tiempoRestanteMilisegundos = 0;
 
-    protected String nombreEjercicioActual;
+    private String nombreEjercicioActual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
