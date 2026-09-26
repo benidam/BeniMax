@@ -91,7 +91,7 @@ public class CrearRutinaActivity extends AppCompatActivity {
                 rutina.put("fecha",com.google.firebase.firestore.FieldValue.serverTimestamp());
 
 
-                //creamos la ruta exacta donde se va almacenar la rutina que seria ( usuarios->UID->rutinas->rutina , esta última dejamos que firebase le genere un id aleatorio a cada rutina
+                //la ruta exacta donde se va almacenar la rutina que seria ( usuarios->UID->rutinas->rutina , esta última dejamos que firebase le genere un id aleatorio a cada rutina
 
                 db.collection("usuarios").document(userID).collection("rutinas")
                                 .add(rutina)
@@ -145,4 +145,6 @@ public class CrearRutinaActivity extends AppCompatActivity {
 
         builder.show();
     }
+
 }
+

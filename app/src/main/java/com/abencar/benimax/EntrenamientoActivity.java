@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,12 @@ public class EntrenamientoActivity extends AppCompatActivity {
 
     private String nombreEjercicioActual;
 
+    private FirebaseAuth mAuth;
+
+    private String userID;
+
+    private String idRutinaActual;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +47,13 @@ public class EntrenamientoActivity extends AppCompatActivity {
         Button btnGuardarSerie = findViewById(R.id.btnGuardarSerie);
         Button btnMasTiempo = findViewById(R.id.btnMasTiempo);
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
 
         Intent intenRecibido = this.getIntent();
         nombreEjercicioActual = intenRecibido.getStringExtra("CLAVE_EJ");
+
+        idRutinaActual = intenRecibido.getStringExtra("CLAVE_ID_RUTINA");
 
         tvEjercicioActual.setText(nombreEjercicioActual);
 
@@ -90,7 +102,8 @@ public class EntrenamientoActivity extends AppCompatActivity {
             serie.put("reps", Integer.parseInt(repsStr));
             serie.put("rir", Integer.parseInt(rirStr));
 
-            db.collection("series").add(serie).addOnSuccessListener(documentReference -> {
+            db.collection("usuarios").document(userID).collection("rutinas").document(idRutinaActual).collection("series").add(serie)
+                    .addOnSuccessListener(documentReference -> {
 
                 numeroSerie++;
                 etReps.setText("");
