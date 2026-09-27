@@ -57,7 +57,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
         userID = mAuth.getCurrentUser().getUid();
 
         Intent intenRecibido = this.getIntent();
-
+        idRutinaActual = intenRecibido.getStringExtra("CLAVE_ID_RUTINA");
         listaEjerciciosRutina = intenRecibido.getStringArrayListExtra("CLAVE_LISTA_EJ");
 
             // Comprobamos que la lista ha llegado bien y no está vacía
@@ -100,7 +100,7 @@ public class EntrenamientoActivity extends AppCompatActivity {
 
     private void guardarSerie () {
             Map<String,Object> serie = new HashMap<>();
-            String pesoStr = etPeso.getText().toString();
+            String pesoStr = etPeso.getText().toString().replace(",", ".");
             String repsStr = etReps.getText().toString();
             String rirStr = etRir.getText().toString();
 

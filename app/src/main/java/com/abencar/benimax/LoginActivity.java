@@ -17,6 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etCorreo, etContra;
@@ -33,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
         etContra = findViewById(R.id.etContra);
         Button btnRegistrarse = findViewById(R.id.btnRegistrarse);
         Button btnLogearse = findViewById(R.id.btnValidarlog);
+
+
 
         btnRegistrarse.setOnClickListener(new View.OnClickListener() {
             @Override
