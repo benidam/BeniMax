@@ -87,4 +87,12 @@
         android:textSize="18sp"
         android:layout_marginBottom="16dp" />
 
+    <Button
+        android:id="@+id/btnSiguienteEjercicio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Siguiente Ejercicio"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FF9800" />
+
 </LinearLayout>

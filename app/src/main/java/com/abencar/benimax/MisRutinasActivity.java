@@ -67,7 +67,7 @@ public class MisRutinasActivity extends AppCompatActivity {
                                     intent.putExtra("CLAVE_ID_RUTINA", idRutina);
 
                                     // Para arrancar, le mandamos el PRIMER ejercicio de la lista (posición 0)
-                                    intent.putExtra("CLAVE_EJ", ejercicios.get(0));
+                                    intent.putExtra("CLAVE_LISTA_EJ", ejercicios);
 
                                     startActivity(intent);
                                 } else {

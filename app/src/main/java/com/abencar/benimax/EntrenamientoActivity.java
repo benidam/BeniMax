@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 import java.util.Locale;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +36,9 @@ public class EntrenamientoActivity extends AppCompatActivity {
 
     private String idRutinaActual;
 
+    private ArrayList<String> listaEjerciciosRutina;
+    private int indiceEjercicioActual = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,16 +51,20 @@ public class EntrenamientoActivity extends AppCompatActivity {
         etRir = findViewById(R.id.etRir);
         Button btnGuardarSerie = findViewById(R.id.btnGuardarSerie);
         Button btnMasTiempo = findViewById(R.id.btnMasTiempo);
+        Button btnSiguienteEjercicio = findViewById(R.id.btnSiguienteEjercicio);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
 
         Intent intenRecibido = this.getIntent();
-        nombreEjercicioActual = intenRecibido.getStringExtra("CLAVE_EJ");
 
-        idRutinaActual = intenRecibido.getStringExtra("CLAVE_ID_RUTINA");
+        listaEjerciciosRutina = intenRecibido.getStringArrayListExtra("CLAVE_LISTA_EJ");
 
-        tvEjercicioActual.setText(nombreEjercicioActual);
+            // Comprobamos que la lista ha llegado bien y no está vacía
+        if (listaEjerciciosRutina != null && !listaEjerciciosRutina.isEmpty()) {
+            nombreEjercicioActual = listaEjerciciosRutina.get(indiceEjercicioActual);
+            tvEjercicioActual.setText(nombreEjercicioActual);
+        }
 
         btnGuardarSerie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +77,13 @@ public class EntrenamientoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 masTiempo();
+            }
+        });
+
+        btnSiguienteEjercicio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                siguienteEjercicio();
             }
         });
     }
@@ -147,6 +163,29 @@ public class EntrenamientoActivity extends AppCompatActivity {
                 }
             }.start();
         }
+
+    private void siguienteEjercicio() {
+        indiceEjercicioActual++; // Sumamos 1 para pasar a la siguiente posición
+
+        // Comprobamos si aún quedan ejercicios en la lista
+        if (indiceEjercicioActual < listaEjerciciosRutina.size()) {
+            // Actualizamos el nombre en la variable y en la pantalla
+            nombreEjercicioActual = listaEjerciciosRutina.get(indiceEjercicioActual);
+            tvEjercicioActual.setText(nombreEjercicioActual);
+
+            // Reiniciamos la serie a 1 y limpiamos los campos
+            numeroSerie = 1;
+            etPeso.setText("");
+            etReps.setText("");
+            etRir.setText("");
+
+            Toast.makeText(this, "Pasamos a: " + nombreEjercicioActual, Toast.LENGTH_SHORT).show();
+        } else {
+            // Ya no hay más ejercicios en el array
+            Toast.makeText(this, "¡Rutina Completada! Eres una bestia.", Toast.LENGTH_LONG).show();
+            finish(); // Cierra la pantalla de entrenamiento y vuelve a Mis Rutinas
+        }
+    }
 
         @Override
         protected void onDestroy () {
